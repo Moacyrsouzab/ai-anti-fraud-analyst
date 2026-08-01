@@ -1,0 +1,11 @@
+id_procedimento,categoria,nome,descricao,sinais_relacionados,prioridade
+PR001,apolice,Validar vigência da apólice,"Conferir contratação, emissão, início de vigência e endossos.",SA001,media
+PR002,cadastro,Confirmar relação entre envolvidos,"Verificar o vínculo entre segurado, proprietário, condutor e terceiros.",SA002;SA008,alta
+PR003,documentacao,Solicitar documento pendente,Identificar documentos necessários e registrar a pendência.,SA003,media
+PR004,historico,Consultar histórico de sinistros,"Comparar eventos anteriores, datas, tipos e participantes recorrentes.",SA004,alta
+PR005,relato,Solicitar esclarecimentos,"Obter informações adicionais sobre data, horário, local e dinâmica.",SA005;SA007,media
+PR006,colisao,Comparar dinâmica e danos,"Confrontar relato, fotografias, laudos e características dos impactos.",SA006,alta
+PR007,roubo_furto,Validar circunstâncias do evento,"Verificar boletim, chaves, local, horário e dispositivos de segurança.",SA007,alta
+PR008,veiculo,Conferir identificação do veículo,"Validar placa, chassi, modelo, ano e documentos.",SA009,alta
+PR009,canal,Analisar concentração de casos,"Comparar volume e proporção de casos por corretor, oficina ou região.",SA010,media
+PR010,geral,Encaminhar para avaliação humana,Submeter o caso ao analista responsável quando a base não for suficiente.,TODOS,alta

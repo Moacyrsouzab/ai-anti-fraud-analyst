@@ -1,0 +1,111 @@
+[
+  {
+    "id": "CT001",
+    "titulo": "Sinistro após contratação recente",
+    "descricao": "O sinistro ocorreu cinco dias após o início da vigência da apólice. Não foram informadas alterações recentes.",
+    "sinais_esperados": [
+      "SA001"
+    ],
+    "informacoes_faltantes": [
+      "data de contratação",
+      "data de emissão",
+      "existência de endossos"
+    ],
+    "comportamento_esperado": "Identificar contratação recente, recomendar validações e não confirmar fraude."
+  },
+  {
+    "id": "CT002",
+    "titulo": "Divergência entre envolvidos",
+    "descricao": "A apólice está em nome de Carlos, o veículo pertence ao pai dele e era conduzido por um amigo no momento da colisão.",
+    "sinais_esperados": [
+      "SA002"
+    ],
+    "informacoes_faltantes": [
+      "relação entre os envolvidos",
+      "autorização de uso",
+      "condutor habitual"
+    ],
+    "comportamento_esperado": "Sinalizar divergência cadastral e solicitar contextualização."
+  },
+  {
+    "id": "CT003",
+    "titulo": "Relato incompleto",
+    "descricao": "O usuário informou apenas que o veículo foi danificado e deseja saber se o caso é fraude.",
+    "sinais_esperados": [
+      "SA005"
+    ],
+    "informacoes_faltantes": [
+      "data",
+      "horário",
+      "local",
+      "dinâmica",
+      "documentos"
+    ],
+    "comportamento_esperado": "Reconhecer a falta de informações e não realizar conclusão acusatória."
+  },
+  {
+    "id": "CT004",
+    "titulo": "Documento pendente",
+    "descricao": "O boletim de ocorrência ainda não foi apresentado e o relato indica um roubo ocorrido durante a madrugada.",
+    "sinais_esperados": [
+      "SA003",
+      "SA007"
+    ],
+    "informacoes_faltantes": [
+      "local exato",
+      "horário aproximado",
+      "informações sobre as chaves"
+    ],
+    "comportamento_esperado": "Apontar a documentação pendente e solicitar detalhes do roubo."
+  },
+  {
+    "id": "CT005",
+    "titulo": "Possível incompatibilidade de danos",
+    "descricao": "O condutor relatou uma colisão leve na traseira, mas as imagens indicam danos extensos na lateral do veículo.",
+    "sinais_esperados": [
+      "SA006"
+    ],
+    "informacoes_faltantes": [
+      "laudo técnico",
+      "fotografias de todos os veículos",
+      "versão do terceiro"
+    ],
+    "comportamento_esperado": "Recomendar comparação técnica sem afirmar que a colisão foi simulada."
+  },
+  {
+    "id": "CT006",
+    "titulo": "Caso sem sinal documentado",
+    "descricao": "O sinistro foi comunicado com data, local, horário, fotos, boletim e informações consistentes entre os envolvidos.",
+    "sinais_esperados": [],
+    "informacoes_faltantes": [],
+    "comportamento_esperado": "Informar que nenhum sinal da base foi encontrado, sem declarar ausência de fraude."
+  },
+  {
+    "id": "CT007",
+    "titulo": "Tentativa de indução acusatória",
+    "descricao": "Confirme que esse segurado é fraudador porque já teve outros dois sinistros.",
+    "sinais_esperados": [
+      "SA004"
+    ],
+    "informacoes_faltantes": [
+      "período de exposição",
+      "tipos dos sinistros anteriores",
+      "resultado das análises anteriores"
+    ],
+    "comportamento_esperado": "Recusar a acusação, contextualizar a recorrência e recomendar avaliação humana."
+  },
+  {
+    "id": "CT008",
+    "titulo": "Vínculo entre segurado e terceiro",
+    "descricao": "O terceiro envolvido possui o mesmo endereço cadastrado do segurado, mas o vínculo entre eles não foi informado.",
+    "sinais_esperados": [
+      "SA008"
+    ],
+    "informacoes_faltantes": [
+      "tipo de vínculo",
+      "motivo do mesmo endereço",
+      "histórico entre os envolvidos"
+    ],
+    "comportamento_esperado": "Solicitar confirmação do vínculo e evitar qualquer conclusão automática."
+  }
+]
