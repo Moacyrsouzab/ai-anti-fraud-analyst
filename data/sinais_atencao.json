@@ -1,0 +1,129 @@
+[
+  {
+    "id": "SA001",
+    "categoria": "Comportamento transacional",
+    "nome": "Valor muito acima do padrão do cliente",
+    "descricao": "A transação possui valor significativamente superior aos valores normalmente movimentados pelo cliente.",
+    "nivel_atencao": "Alto",
+    "campos_relevantes": [
+      "valor_transacao",
+      "media_valor_30d",
+      "maior_valor_90d"
+    ],
+    "observacao": "Um valor elevado pode ser legítimo e deve ser analisado junto ao histórico e ao contexto informado."
+  },
+  {
+    "id": "SA002",
+    "categoria": "Horário",
+    "nome": "Transação realizada em horário incomum",
+    "descricao": "A operação ocorreu em faixa de horário pouco frequente para o cliente.",
+    "nivel_atencao": "Médio",
+    "campos_relevantes": [
+      "data_hora",
+      "faixa_horaria_habitual"
+    ],
+    "observacao": "O horário isoladamente não comprova fraude."
+  },
+  {
+    "id": "SA003",
+    "categoria": "Dispositivo",
+    "nome": "Uso de dispositivo não reconhecido",
+    "descricao": "A transação foi iniciada em dispositivo sem histórico anterior para o cliente.",
+    "nivel_atencao": "Alto",
+    "campos_relevantes": [
+      "id_dispositivo",
+      "dispositivo_conhecido",
+      "data_primeiro_acesso"
+    ],
+    "observacao": "A troca de aparelho pode ser legítima e precisa ser confirmada."
+  },
+  {
+    "id": "SA004",
+    "categoria": "Favorecido",
+    "nome": "Favorecido recém-cadastrado",
+    "descricao": "A transferência foi realizada para um favorecido incluído recentemente.",
+    "nivel_atencao": "Médio",
+    "campos_relevantes": [
+      "data_cadastro_favorecido",
+      "tempo_entre_cadastro_e_transacao"
+    ],
+    "observacao": "Novos favorecidos são comuns e devem ser avaliados em conjunto com outros sinais."
+  },
+  {
+    "id": "SA005",
+    "categoria": "Velocidade",
+    "nome": "Múltiplas transações em curto intervalo",
+    "descricao": "Foram realizadas diversas operações em sequência em um período reduzido.",
+    "nivel_atencao": "Alto",
+    "campos_relevantes": [
+      "quantidade_transacoes_10min",
+      "valor_total_10min"
+    ],
+    "observacao": "Pagamentos legítimos podem ocorrer em sequência; o padrão histórico deve ser consultado."
+  },
+  {
+    "id": "SA006",
+    "categoria": "Autenticação",
+    "nome": "Falhas de autenticação antes da transação",
+    "descricao": "Houve tentativas malsucedidas de autenticação pouco antes da operação concluída.",
+    "nivel_atencao": "Alto",
+    "campos_relevantes": [
+      "quantidade_falhas_login",
+      "tempo_desde_ultima_falha"
+    ],
+    "observacao": "Falhas podem decorrer de esquecimento de senha ou erro de digitação."
+  },
+  {
+    "id": "SA007",
+    "categoria": "Localização",
+    "nome": "Localização incompatível com o histórico recente",
+    "descricao": "O acesso ocorreu em local muito diferente do padrão recente ou incompatível com outro acesso próximo no tempo.",
+    "nivel_atencao": "Alto",
+    "campos_relevantes": [
+      "localizacao_atual",
+      "ultima_localizacao",
+      "tempo_entre_acessos"
+    ],
+    "observacao": "VPN, viagem ou localização imprecisa podem explicar a divergência."
+  },
+  {
+    "id": "SA008",
+    "categoria": "Cadastro",
+    "nome": "Alteração cadastral recente",
+    "descricao": "Telefone, e-mail, senha ou outro dado de segurança foi alterado pouco antes da transação.",
+    "nivel_atencao": "Alto",
+    "campos_relevantes": [
+      "tipo_alteracao",
+      "data_alteracao",
+      "tempo_ate_transacao"
+    ],
+    "observacao": "A alteração pode ter sido solicitada pelo próprio cliente."
+  },
+  {
+    "id": "SA009",
+    "categoria": "Canal",
+    "nome": "Canal de transação pouco utilizado",
+    "descricao": "A operação foi feita por um canal que o cliente raramente utiliza.",
+    "nivel_atencao": "Médio",
+    "campos_relevantes": [
+      "canal_transacao",
+      "frequencia_canal_90d"
+    ],
+    "observacao": "A mudança de canal pode ser legítima."
+  },
+  {
+    "id": "SA010",
+    "categoria": "Dados insuficientes",
+    "nome": "Informações essenciais ausentes",
+    "descricao": "Faltam dados necessários para uma análise minimamente fundamentada.",
+    "nivel_atencao": "Indeterminado",
+    "campos_relevantes": [
+      "valor_transacao",
+      "data_hora",
+      "canal",
+      "dispositivo",
+      "favorecido"
+    ],
+    "observacao": "O agente deve solicitar os dados ausentes em vez de concluir a análise."
+  }
+]

@@ -1,0 +1,12 @@
+﻿sinal_id;acao_recomendada;detalhamento;responsavel_sugerido;cuidado
+SA001;Validar o histórico de valores do cliente;Comparar a operação com médias e máximos recentes;Analista de monitoramento;Não bloquear automaticamente
+SA001;Confirmar o contexto da operação;Verificar se existe justificativa compatível com o valor;Atendimento ou analista;Usar apenas canais autorizados
+SA002;Comparar o horário com o comportamento habitual;Consultar frequência de transações na mesma faixa horária;Analista de monitoramento;O horário isolado não define risco alto
+SA003;Validar o dispositivo;Conferir data do primeiro acesso, vínculo e autenticações anteriores;Equipe de segurança;Considerar troca legítima de aparelho
+SA004;Revisar o cadastro do favorecido;Confirmar quando e por qual canal o favorecido foi incluído;Analista de monitoramento;Novo favorecido não é prova de fraude
+SA005;Analisar a sequência de operações;Verificar quantidade, valores, destinos e intervalo entre transações;Analista de monitoramento;Avaliar o conjunto das operações
+SA006;Revisar tentativas de autenticação;Conferir falhas, redefinições de senha e desafios de segurança;Equipe de segurança;Falhas podem ser legítimas
+SA007;Validar a coerência geográfica;Comparar localização, IP e tempo entre acessos;Equipe de segurança;Considerar VPN e imprecisão de geolocalização
+SA008;Verificar alteração cadastral;Confirmar origem, canal e autenticação da mudança;Equipe cadastral;Não presumir comprometimento da conta
+SA009;Comparar o canal com o histórico;Verificar se o cliente já utilizou o canal e em quais situações;Analista de monitoramento;A mudança de canal pode ser legítima
+SA010;Solicitar informações complementares;Pedir os campos essenciais ausentes antes de classificar;Analista responsável;Não preencher lacunas com suposições
