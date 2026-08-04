@@ -2,13 +2,13 @@
 
 ## Dados Utilizados
 
-O Sentinel utiliza os arquivos da pasta `data` como base de conhecimento para apoiar a triagem inicial de possíveis sinais de atenção em sinistros de automóvel.
+O Sentinel utiliza os arquivos da pasta `data` como base de conhecimento para apoiar a triagem inicial de possíveis sinais de atenção em transações bancárias.
 
-Todos os dados utilizados neste projeto são fictícios e foram criados exclusivamente para fins acadêmicos. Nenhuma informação pessoal real, dado de cliente ou regra interna de seguradora foi utilizada.
+Todos os dados utilizados neste projeto são fictícios e foram criados exclusivamente para fins acadêmicos. Nenhuma informação pessoal real, dado de cliente, credencial bancária ou regra interna de instituição financeira foi utilizada.
 
 | Arquivo | Formato | Utilização no Agente |
 |---------|---------|---------------------|
-| `sinais_atencao.json` | JSON | Armazenar os sinais de atenção que podem ser identificados durante a análise do sinistro |
+| `sinais_atencao.json` | JSON | Armazenar os sinais de atenção que podem ser identificados durante a análise de uma transação bancária |
 | `procedimentos.csv` | CSV | Relacionar cada sinal de atenção às verificações e aos próximos passos sugeridos |
 | `exemplos_casos.json` | JSON | Disponibilizar casos fictícios para testar e avaliar o comportamento do agente |
 | `glossario.md` | Markdown | Padronizar os principais termos utilizados pelo Sentinel |
@@ -21,18 +21,18 @@ Todos os dados utilizados neste projeto são fictícios e foram criados exclusiv
 
 ## Adaptações nos Dados
 
-Os dados do projeto de referência estavam relacionados a um assistente financeiro. Para o desenvolvimento do Sentinel, os arquivos foram modificados e expandidos para representar situações relacionadas à prevenção a fraudes em sinistros de automóvel.
+Os dados do projeto de referência estavam relacionados a um assistente financeiro. Para o desenvolvimento do Sentinel, os arquivos foram modificados e expandidos para representar situações relacionadas à prevenção a fraudes em transações bancárias.
 
 As principais adaptações realizadas foram:
 
-- Substituição de dados financeiros por informações relacionadas a apólices, veículos, condutores, terceiros, documentos e históricos de sinistros;
-- Criação de sinais de atenção específicos para contratação recente, divergências cadastrais, documentação pendente, recorrência de sinistros, inconsistências em relatos e incompatibilidade entre dinâmica e danos;
+- Inclusão de informações relacionadas a Pix, transferências, pagamentos, contas, favorecidos, dispositivos, localização, horários e histórico transacional;
+- Criação de sinais de atenção específicos para valores fora do padrão, movimentações em horários incomuns, uso de novo dispositivo, localização divergente, favorecido recém-cadastrado, tentativas consecutivas e aumento repentino da frequência de transações;
 - Inclusão de orientações de análise e próximos passos para cada sinal cadastrado;
-- Criação de casos fictícios para testar respostas corretas, ausência de informações e tentativas de induzir o agente a realizar acusações;
+- Criação de casos fictícios para testar respostas corretas, ausência de informações e tentativas de induzir o agente a realizar acusações ou bloqueios automáticos;
 - Inclusão de observações de cautela para evitar que um sinal seja tratado como prova de fraude;
 - Criação de um glossário para manter a linguagem do agente padronizada, explicável e não acusatória.
 
-A base foi construída manualmente e possui finalidade demonstrativa. Ela não representa todas as regras, procedimentos ou situações possíveis em uma operação real de seguros.
+A base foi construída manualmente e possui finalidade demonstrativa. Ela não representa todas as regras, procedimentos ou situações possíveis em uma operação bancária real.
 
 ---
 
@@ -89,7 +89,7 @@ O prompt utilizado pelo Sentinel é composto por três partes:
 
 1. Instruções fixas que definem o comportamento do agente;
 2. Base de conhecimento carregada da pasta `data`;
-3. Descrição do sinistro informada pelo usuário.
+3. Descrição da transação informada pelo usuário.
 
 As instruções fixas orientam o agente a:
 
@@ -100,6 +100,7 @@ As instruções fixas orientam o agente a:
 - Informar quando os dados forem insuficientes;
 - Explicar os sinais identificados;
 - Sugerir próximos passos;
+- Não bloquear, cancelar ou aprovar transações automaticamente;
 - Manter a decisão final sob responsabilidade humana.
 
 A base de conhecimento é convertida para texto e adicionada ao prompt antes da descrição do caso.
@@ -118,10 +119,10 @@ base_formatada = json.dumps(
 
 prompt = f'''
 Você é o Sentinel, um assistente de apoio à triagem de
-possíveis sinais de fraude em sinistros de automóvel.
+possíveis sinais de fraude em transações bancárias.
 
 Utilize somente a base de conhecimento apresentada.
-Não confirme fraudes e não invente informações.
+Não confirme fraudes, não bloqueie transações e não invente informações.
 
 Base de conhecimento:
 
@@ -133,16 +134,17 @@ Caso informado pelo usuário:
 
 Apresente:
 1. Resumo do caso;
-2. Sinais de atenção;
-3. Informações ausentes;
-4. Próximos passos;
-5. Limitações da análise.
+2. Nível de atenção;
+3. Sinais de atenção;
+4. Informações ausentes ou contraditórias;
+5. Próximos passos;
+6. Limitações da análise.
 '''
 ```
 
 Nesta primeira versão, toda a base é incluída no contexto porque possui poucos registros.
 
-Em uma evolução futura, o Sentinel poderá utilizar uma estratégia de RAG para consultar dinamicamente apenas os sinais e procedimentos mais relacionados ao caso analisado.
+Em uma evolução futura, o Sentinel poderá utilizar uma estratégia de RAG para consultar dinamicamente apenas os sinais e procedimentos mais relacionados à transação analisada.
 
 ---
 
@@ -154,55 +156,68 @@ O exemplo abaixo mostra como os dados podem ser formatados antes de serem enviad
 Identidade do Agente:
 - Nome: Sentinel
 - Função: Apoiar a triagem inicial de possíveis sinais de fraude
-- Escopo: Sinistros de automóvel
-- Limitação: Não confirmar fraude e não substituir a decisão humana
+- Escopo: Transações bancárias
+- Limitação: Não confirmar fraude, não bloquear transações e não substituir a decisão humana
 
 Sinais de Atenção Disponíveis:
 
 Sinal SA001:
-- Categoria: Apólice
-- Nome: Sinistro próximo ao início da vigência
-- Descrição: O sinistro ocorreu pouco tempo após o início da vigência.
+- Categoria: Comportamento transacional
+- Nome: Valor acima do padrão do cliente
+- Descrição: O valor da transação é significativamente superior aos valores normalmente movimentados pela conta.
 - Nível de atenção: Médio
 - Orientações:
-  - Validar a data de contratação;
-  - Confirmar a data de início da vigência;
-  - Verificar alterações ou endossos recentes.
-- Observação: Este sinal isoladamente não comprova fraude.
+  - Comparar o valor com o histórico recente do cliente;
+  - Verificar se existem transações semelhantes anteriores;
+  - Confirmar se houve alteração recente no perfil de movimentação.
+- Observação: Uma transação de valor elevado pode ser legítima e deve ser contextualizada.
 
 Sinal SA002:
-- Categoria: Cadastro
-- Nome: Divergência entre segurado, proprietário e condutor
-- Descrição: As pessoas relacionadas à apólice, à propriedade do veículo e à condução são diferentes.
+- Categoria: Dispositivo e acesso
+- Nome: Transação realizada em novo dispositivo
+- Descrição: A operação foi iniciada em um dispositivo ainda não reconhecido no histórico da conta.
 - Nível de atenção: Médio
 - Orientações:
-  - Confirmar a relação entre os envolvidos;
-  - Consultar os documentos do veículo;
-  - Verificar quem utilizava o veículo habitualmente.
-- Observação: A divergência pode ser legítima e deve ser contextualizada.
+  - Verificar a data do primeiro acesso do dispositivo;
+  - Consultar alterações cadastrais ou de senha recentes;
+  - Confirmar se houve autenticação adicional.
+- Observação: A troca de aparelho pode ser legítima e não representa fraude isoladamente.
 
 Sinal SA003:
-- Categoria: Documentação
-- Nome: Documento relevante pendente
-- Descrição: Um documento importante para a análise ainda não foi apresentado.
+- Categoria: Favorecido
+- Nome: Favorecido recém-cadastrado
+- Descrição: A transferência foi destinada a um favorecido adicionado pouco antes da operação.
 - Nível de atenção: Médio
 - Orientações:
-  - Verificar se o documento é obrigatório;
-  - Solicitar o documento pendente;
-  - Comparar o documento com o relato do sinistro.
-- Observação: A ausência temporária de um documento não confirma fraude.
+  - Verificar o intervalo entre o cadastro do favorecido e a transação;
+  - Comparar com o histórico de destinatários da conta;
+  - Confirmar se ocorreram outras transações para o mesmo favorecido.
+- Observação: Um novo favorecido pode representar uma operação legítima.
+
+Sinal SA004:
+- Categoria: Horário e frequência
+- Nome: Sequência de transações em horário incomum
+- Descrição: Foram realizadas várias transações em curto intervalo e fora do horário habitual do cliente.
+- Nível de atenção: Alto
+- Orientações:
+  - Verificar a quantidade e o intervalo entre as operações;
+  - Comparar o horário com o comportamento histórico da conta;
+  - Consultar tentativas recusadas ou falhas de autenticação anteriores.
+- Observação: O conjunto de sinais aumenta a necessidade de validação, mas não confirma fraude.
 
 Caso Informado:
-- O sinistro ocorreu sete dias após o início da vigência;
-- O veículo pertence ao pai do segurado;
-- Outra pessoa conduzia o veículo no momento da ocorrência;
-- O boletim de ocorrência ainda não foi apresentado.
+- Foi realizado um Pix de R$ 8.500,00 às 02h18;
+- O valor médio das transações do cliente é de aproximadamente R$ 450,00;
+- A operação foi feita em um novo dispositivo;
+- O favorecido foi cadastrado dez minutos antes da transferência;
+- Houve outras duas tentativas de Pix no mesmo período.
 
 Resposta Esperada:
 - Resumir as informações fornecidas;
-- Identificar os sinais SA001, SA002 e SA003;
+- Classificar o nível de atenção com base na combinação dos sinais;
+- Identificar os sinais SA001, SA002, SA003 e SA004;
 - Explicar por que cada sinal merece verificação;
 - Informar os dados que ainda precisam ser consultados;
-- Sugerir próximos passos;
-- Reforçar que a análise não representa confirmação de fraude.
+- Sugerir próximos passos de validação;
+- Reforçar que a análise não representa confirmação de fraude e não autoriza bloqueio automático.
 ```
