@@ -1,14 +1,14 @@
 """
 Lógica do Sentinel AI: carregamento da base de conhecimento (`data/`),
-montagem do system prompt e chamada ao modelo de linguagem.
+montagem do system prompt e chamada ao modelo local via Ollama.
 """
 
 import json
 from typing import Dict, List
 
 import pandas as pd
+import requests
 import streamlit as st
-from anthropic import Anthropic
 
 import config
 
@@ -147,29 +147,51 @@ def montar_system_prompt() -> str:
 
 
 class SentinelAgent:
-    """Encapsula a chamada ao modelo de linguagem para o Sentinel AI."""
+    """Encapsula a chamada ao modelo local (via Ollama) para o Sentinel AI."""
 
     def __init__(self) -> None:
-        if not config.ANTHROPIC_API_KEY:
-            raise RuntimeError(
-                "ANTHROPIC_API_KEY não configurada. Defina a variável de "
-                "ambiente ou crie um arquivo .env com essa chave "
-                "(veja .env.example)."
-            )
-        self._client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
         self._system_prompt = montar_system_prompt()
+        self._modelo = config.MODEL_NAME
+
+    @property
+    def modelo(self) -> str:
+        return self._modelo
 
     def analisar(self, historico: List[Dict[str, str]]) -> str:
         """
         Envia o histórico de mensagens (formato [{"role": ..., "content": ...}])
-        ao modelo e retorna a resposta em texto, seguindo o formato
-        obrigatório do Sentinel AI.
+        ao Ollama (`/api/chat`) e retorna a resposta em texto, seguindo o
+        formato obrigatório do Sentinel AI.
         """
-        resposta = self._client.messages.create(
-            model=config.MODEL_NAME,
-            max_tokens=config.MAX_TOKENS,
-            system=self._system_prompt,
-            messages=historico,
-        )
-        partes_texto = [bloco.text for bloco in resposta.content if bloco.type == "text"]
-        return "\n".join(partes_texto).strip()
+        mensagens = [{"role": "system", "content": self._system_prompt}] + historico
+
+        try:
+            timeout_s = config.timeout_para_modelo(self._modelo)
+            resposta = requests.post(
+                config.OLLAMA_CHAT_URL,
+                json={"model": self._modelo, "messages": mensagens, "stream": False},
+                timeout=timeout_s,
+            )
+            resposta.raise_for_status()
+            conteudo = resposta.json().get("message", {}).get("content", "")
+            return conteudo.strip() or "Não consegui gerar uma resposta agora. Tente novamente em instantes."
+
+        except requests.Timeout:
+            return (
+                f"O modelo '{self._modelo}' demorou para responder. "
+                "Tente novamente, aumente o timeout em OLLAMA_TIMEOUT_S (ex.: 240) "
+                "ou use um modelo mais leve (ex.: llama3.2:3b)."
+            )
+        except requests.HTTPError as exc:
+            status = exc.response.status_code if exc.response is not None else "desconhecido"
+            return (
+                f"Ollama respondeu com erro HTTP {status} para o modelo '{self._modelo}'. "
+                f"Verifique se o modelo está instalado com: ollama pull {self._modelo}"
+            )
+        except requests.RequestException:
+            return (
+                "Não consegui conectar ao Ollama agora. Verifique se o serviço está ativo "
+                "com 'ollama serve' e tente novamente."
+            )
+        except ValueError:
+            return "Recebi uma resposta inválida do modelo. Tente novamente."
