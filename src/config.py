@@ -1,21 +1,63 @@
 """
-Configurações do Sentinel AI.
+Configurações do Sentinel AI (execução via Ollama local).
 
-Carrega variáveis de ambiente e centraliza os caminhos para a base de
-conhecimento (pasta `data/`) utilizada pelo agente.
+Centraliza a conexão com o servidor Ollama, a escolha automática de
+modelo e os caminhos para a base de conhecimento (pasta `data/`).
 """
 
 import os
 from pathlib import Path
 
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# --- Anthropic API ---
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-MODEL_NAME = os.getenv("SENTINEL_MODEL", "claude-sonnet-4-6")
-MAX_TOKENS = int(os.getenv("SENTINEL_MAX_TOKENS", "1500"))
+# --- Ollama ---
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+OLLAMA_CHAT_URL = f"{OLLAMA_HOST}/api/chat"
+OLLAMA_TAGS_URL = f"{OLLAMA_HOST}/api/tags"
+REQUEST_TIMEOUT_S = int(os.getenv("OLLAMA_TIMEOUT_S", "120"))
+
+# Ordem de preferência quando SENTINEL_MODEL não é definido explicitamente.
+MODELOS_PREFERIDOS = ["llama3.2:3b", "gpt-oss", "deepseek-r1:8b"]
+
+
+def escolher_modelo_ollama() -> str:
+    """
+    Decide qual modelo Ollama usar, nesta ordem:
+    1) variável de ambiente SENTINEL_MODEL, se definida;
+    2) primeiro modelo da lista de preferidos que já estiver instalado
+       localmente (consultando `GET /api/tags`);
+    3) fallback para "llama3.2:3b".
+    """
+    modelo_env = os.getenv("SENTINEL_MODEL")
+    if modelo_env:
+        return modelo_env
+
+    try:
+        resposta = requests.get(OLLAMA_TAGS_URL, timeout=5)
+        resposta.raise_for_status()
+        modelos_instalados = resposta.json().get("models", [])
+        disponiveis = {m.get("name", "").split(":")[0] for m in modelos_instalados}
+        for nome in MODELOS_PREFERIDOS:
+            if nome.split(":")[0] in disponiveis:
+                return nome
+    except requests.RequestException:
+        pass
+
+    return "llama3.2:3b"
+
+
+MODEL_NAME = escolher_modelo_ollama()
+
+
+def timeout_para_modelo(modelo: str) -> int:
+    """Modelos de raciocínio (ex.: deepseek-r1) costumam demorar mais no primeiro token."""
+    if "deepseek-r1" in modelo.lower():
+        return max(REQUEST_TIMEOUT_S, 240)
+    return REQUEST_TIMEOUT_S
+
 
 # --- Caminhos da base de conhecimento (pasta `data/` na raiz do repo) ---
 BASE_DIR = Path(__file__).resolve().parent.parent
