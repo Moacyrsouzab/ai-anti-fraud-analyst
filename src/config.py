@@ -9,9 +9,6 @@ import os
 from pathlib import Path
 
 import requests
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # --- Ollama ---
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
