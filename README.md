@@ -1,138 +1,113 @@
-# 🤖 Agente Financeiro Inteligente com IA Generativa
+# 🛡️ Sentinel AI — Agente de Apoio à Triagem de Fraudes Bancárias
 
 ## Contexto
 
-Os assistentes virtuais no setor financeiro estão evoluindo de simples chatbots reativos para **agentes inteligentes e proativos**. Neste desafio, você vai idealizar e prototipar um agente financeiro que utiliza IA Generativa para:
+Equipes de prevenção a fraudes em instituições financeiras precisam avaliar grandes volumes de transações — Pix, transferências, pagamentos e outras movimentações — para identificar comportamentos fora do padrão. Esse processo costuma ser manual, demorado e sujeito à variação de experiência entre analistas.
 
-- **Antecipar necessidades** ao invés de apenas responder perguntas
-- **Personalizar** sugestões com base no contexto de cada cliente
-- **Cocriar soluções** financeiras de forma consultiva
-- **Garantir segurança** e confiabilidade nas respostas (anti-alucinação)
+O **Sentinel AI** é um agente construído com IA Generativa para apoiar essa triagem: ele analisa os dados de uma transação, identifica sinais de atenção com base em uma base de conhecimento estruturada, classifica a prioridade do caso e recomenda próximos passos de verificação — sem nunca confirmar fraude, acusar clientes ou tomar decisões automáticas. A decisão final permanece sempre sob responsabilidade humana.
 
-> [!TIP]
-> Na pasta [`examples/`](./examples/) você encontra referências de implementação para cada etapa deste desafio.
+Este projeto nasceu como adaptação do desafio ["Agente Financeiro Inteligente com IA Generativa"](https://github.com/digitalinnovationone), da DIO, redirecionado especificamente para o caso de uso de **prevenção a fraudes bancárias**.
+
+> [!IMPORTANT]
+> Todos os dados utilizados neste projeto (`data/`) são fictícios e foram criados exclusivamente para fins acadêmicos. Nenhuma informação pessoal real, credencial bancária ou regra interna de instituição financeira foi utilizada.
 
 ---
 
-## O Que Você Deve Entregar
+## O Que Este Projeto Entrega
 
 ### 1. Documentação do Agente
 
-Defina **o que** seu agente faz e **como** ele funciona:
+Define o caso de uso, a persona ("Sentinel AI"), a arquitetura (fluxo de dados, integração com a base de conhecimento) e as estratégias de segurança e anti-alucinação.
 
-- **Caso de Uso:** Qual problema financeiro ele resolve? (ex: consultoria de investimentos, planejamento de metas, alertas de gastos)
-- **Persona e Tom de Voz:** Como o agente se comporta e se comunica?
-- **Arquitetura:** Fluxo de dados e integração com a base de conhecimento
-- **Segurança:** Como evitar alucinações e garantir respostas confiáveis?
-
-📄 **Template:** [`docs/01-documentacao-agente.md`](./docs/01-documentacao-agente.md)
+📄 [`docs/01-documentacao-agente.md`](./docs/01-documentacao-agente.md)
 
 ---
 
 ### 2. Base de Conhecimento
 
-Utilize os **dados mockados** disponíveis na pasta [`data/`](./data/) para alimentar seu agente:
+A base de conhecimento fictícia usada pelo Sentinel para triagem de sinais de atenção em transações bancárias:
 
 | Arquivo | Formato | Descrição |
 |---------|---------|-----------|
-| `transacoes.csv` | CSV | Histórico de transações do cliente |
-| `historico_atendimento.csv` | CSV | Histórico de atendimentos anteriores |
-| `perfil_investidor.json` | JSON | Perfil e preferências do cliente |
-| `produtos_financeiros.json` | JSON | Produtos e serviços disponíveis |
+| `sinais_atencao.json` | JSON | Catálogo de sinais de atenção (`SA001`–`SA010`) e campos relevantes para cada um |
+| `procedimentos.csv` | CSV | Ações e verificações recomendadas para cada sinal |
+| `exemplos_casos.json` | JSON | Casos fictícios (`CT001`–`CT006`) usados em testes funcionais e de segurança |
+| `glossario.md` | Markdown | Padronização de termos e linguagem não acusatória do agente |
 
-Você pode adaptar ou expandir esses dados conforme seu caso de uso.
-
-📄 **Template:** [`docs/02-base-conhecimento.md`](./docs/02-base-conhecimento.md)
+📄 [`docs/02-base-conhecimento.md`](./docs/02-base-conhecimento.md)
 
 ---
 
 ### 3. Prompts do Agente
 
-Documente os prompts que definem o comportamento do seu agente:
+System prompt completo do Sentinel AI, exemplos de interação baseados nos casos de teste reais e tratamento de edge cases (perguntas fora do escopo, tentativas de obter dados sensíveis, tentativas de indução a acusação e dados insuficientes).
 
-- **System Prompt:** Instruções gerais de comportamento e restrições
-- **Exemplos de Interação:** Cenários de uso com entrada e saída esperada
-- **Tratamento de Edge Cases:** Como o agente lida com situações limite
-
-📄 **Template:** [`docs/03-prompts.md`](./docs/03-prompts.md)
+📄 [`docs/03-prompts.md`](./docs/03-prompts.md)
 
 ---
 
 ### 4. Aplicação Funcional
 
-Desenvolva um **protótipo funcional** do seu agente:
+Protótipo do chatbot de triagem, com integração a um LLM e conexão com a base de conhecimento.
 
-- Chatbot interativo (sugestão: Streamlit, Gradio ou similar)
-- Integração com LLM (via API ou modelo local)
-- Conexão com a base de conhecimento
-
-📁 **Pasta:** [`src/`](./src/)
+📁 [`src/`](./src/)
 
 ---
 
 ### 5. Avaliação e Métricas
 
-Descreva como você avalia a qualidade do seu agente:
+Metodologia de avaliação, cenários de teste (baseados em `exemplos_casos.json`) e registro de resultados reais dos testes executados, incluindo taxa de alucinação, resistência a manipulação e fidelidade à base de conhecimento.
 
-**Métricas Sugeridas:**
-- Precisão/assertividade das respostas
-- Taxa de respostas seguras (sem alucinações)
-- Coerência com o perfil do cliente
-
-📄 **Template:** [`docs/04-metricas.md`](./docs/04-metricas.md)
+📄 [`docs/04-metricas.md`](./docs/04-metricas.md)
 
 ---
 
 ### 6. Pitch
 
-Grave um **pitch de 3 minutos** (estilo elevador) apresentando:
+Roteiro de pitch de 3 minutos apresentando o problema, a solução, a demonstração e o diferencial do Sentinel AI.
 
-- Qual problema seu agente resolve?
-- Como ele funciona na prática?
-- Por que essa solução é inovadora?
-
-📄 **Template:** [`docs/05-pitch.md`](./docs/05-pitch.md)
+📄 [`docs/05-pitch.md`](./docs/05-pitch.md)
 
 ---
 
 ## Ferramentas Sugeridas
 
-Todas as ferramentas abaixo possuem versões gratuitas:
-
 | Categoria | Ferramentas |
 |-----------|-------------|
-| **LLMs** | [ChatGPT](https://chat.openai.com/), [Copilot](https://copilot.microsoft.com/), [Gemini](https://gemini.google.com/), [Claude](https://claude.ai/), [Ollama](https://ollama.ai/) |
+| **LLMs** | [Claude](https://claude.ai/), [ChatGPT](https://chat.openai.com/), [Gemini](https://gemini.google.com/), [Copilot](https://copilot.microsoft.com/), [Ollama](https://ollama.ai/) |
 | **Desenvolvimento** | [Streamlit](https://streamlit.io/), [Gradio](https://www.gradio.app/), [Google Colab](https://colab.research.google.com/) |
 | **Orquestração** | [LangChain](https://www.langchain.com/), [LangFlow](https://www.langflow.org/), [CrewAI](https://www.crewai.com/) |
 | **Diagramas** | [Mermaid](https://mermaid.js.org/), [Draw.io](https://app.diagrams.net/), [Excalidraw](https://excalidraw.com/) |
+| **Observabilidade** | [LangWatch](https://langwatch.ai/), [Langfuse](https://langfuse.com/) |
 
 ---
 
 ## Estrutura do Repositório
 
 ```
-📁 lab-agente-financeiro/
+📁 ai-anti-fraud-analyst/
 │
 ├── 📄 README.md
 │
-├── 📁 data/                          # Dados mockados para o agente
-│   ├── historico_atendimento.csv     # Histórico de atendimentos (CSV)
-│   ├── perfil_investidor.json        # Perfil do cliente (JSON)
-│   ├── produtos_financeiros.json     # Produtos disponíveis (JSON)
-│   └── transacoes.csv                # Histórico de transações (CSV)
+├── 📁 data/                          # Base de conhecimento fictícia do Sentinel
+│   ├── sinais_atencao.json           # Catálogo de sinais de atenção (SA001-SA010)
+│   ├── procedimentos.csv             # Ações recomendadas por sinal
+│   ├── exemplos_casos.json           # Casos fictícios de teste (CT001-CT006)
+│   ├── glossario.md                  # Linguagem padronizada e não acusatória
+│   └── README.md
 │
 ├── 📁 docs/                          # Documentação do projeto
-│   ├── 01-documentacao-agente.md     # Caso de uso e arquitetura
-│   ├── 02-base-conhecimento.md       # Estratégia de dados
-│   ├── 03-prompts.md                 # Engenharia de prompts
-│   ├── 04-metricas.md                # Avaliação e métricas
+│   ├── 01-documentacao-agente.md     # Caso de uso, persona e arquitetura do Sentinel
+│   ├── 02-base-conhecimento.md       # Estratégia de dados e integração
+│   ├── 03-prompts.md                 # System prompt, cenários e edge cases
+│   ├── 04-metricas.md                # Testes, resultados e métricas de avaliação
 │   └── 05-pitch.md                   # Roteiro do pitch
 │
 ├── 📁 src/                           # Código da aplicação
-│   └── app.py                        # (exemplo de estrutura)
+│   └── README.md                     # (estrutura sugerida da aplicação)
 │
-├── 📁 assets/                        # Imagens e diagramas
-│   └── ...
+├── 📁 assets/                        # Imagens, diagramas e roteiro de referência
+│   └── RoteiroLab.md
 │
 └── 📁 examples/                      # Referências e exemplos
     └── README.md
@@ -140,10 +115,25 @@ Todas as ferramentas abaixo possuem versões gratuitas:
 
 ---
 
+## Limitações e Avisos
+
+O Sentinel AI é uma ferramenta de **apoio à triagem**, não um sistema de decisão autônoma:
+
+- não confirma que uma pessoa ou empresa cometeu fraude;
+- não bloqueia, aprova, recusa ou cancela transações;
+- não substitui o trabalho de investigadores, analistas ou áreas de segurança;
+- não solicita nem processa senhas, tokens ou dados completos de cartão/conta;
+- não utiliza atributos sensíveis (raça, religião, gênero, orientação sexual, etc.) na análise;
+- toda conclusão deve passar por avaliação humana.
+
+Detalhes completos das limitações declaradas estão em [`docs/01-documentacao-agente.md`](./docs/01-documentacao-agente.md).
+
+---
+
 ## Dicas Finais
 
-1. **Comece pelo prompt:** Um bom system prompt é a base de um agente eficaz
-2. **Use os dados mockados:** Eles garantem consistência e evitam problemas com dados sensíveis
-3. **Foque na segurança:** No setor financeiro, evitar alucinações é crítico
-4. **Teste cenários reais:** Simule perguntas que um cliente faria de verdade
-5. **Seja direto no pitch:** 3 minutos passam rápido, vá ao ponto
+1. **Comece pelo prompt:** o system prompt em `docs/03-prompts.md` é a base do comportamento do Sentinel.
+2. **Use os dados mockados:** `sinais_atencao.json`, `procedimentos.csv` e `exemplos_casos.json` já garantem consistência e evitam problemas com dados sensíveis.
+3. **Foque na segurança:** em prevenção a fraudes, alucinação e acusação indevida são inaceitáveis.
+4. **Teste cenários reais:** use os casos `CT001`–`CT006` e crie variações para validar o agente antes de qualquer demonstração.
+5. **Seja direto no pitch:** 3 minutos passam rápido, vá ao ponto.
