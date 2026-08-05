@@ -1,5 +1,5 @@
 """
-Sentinel AI — protótipo funcional em Streamlit.
+Sentinel AI — protótipo funcional em Streamlit (execução via Ollama local).
 
 Interface de chat para apoio à triagem de possíveis sinais de fraude em
 transações bancárias.
@@ -24,17 +24,12 @@ st.caption(
 
 # --- Inicialização do agente (uma vez por sessão) ---
 if "agente" not in st.session_state:
-    try:
-        st.session_state.agente = SentinelAgent()
-        st.session_state.erro_inicializacao = None
-    except RuntimeError as erro:
-        st.session_state.agente = None
-        st.session_state.erro_inicializacao = str(erro)
+    st.session_state.agente = SentinelAgent()
 
 if "mensagens" not in st.session_state:
     st.session_state.mensagens = []
 
-# --- Barra lateral: casos de teste prontos ---
+# --- Barra lateral: casos de teste prontos e status do modelo ---
 with st.sidebar:
     st.header("Casos de teste")
     st.caption(
@@ -60,19 +55,12 @@ with st.sidebar:
         st.rerun()
 
     st.divider()
+    st.caption(f"🧠 Modelo local (Ollama): `{st.session_state.agente.modelo}`")
+    st.caption(f"🔌 Servidor: `{config.OLLAMA_HOST}`")
     st.caption(
         "⚠️ Todos os dados usados neste protótipo são fictícios e "
         "destinados exclusivamente a fins acadêmicos."
     )
-
-# --- Aviso se a API key não estiver configurada ---
-if st.session_state.erro_inicializacao:
-    st.error(st.session_state.erro_inicializacao)
-    st.info(
-        "Crie um arquivo `.env` na raiz do projeto com:\n\n"
-        "```\nANTHROPIC_API_KEY=sua_chave_aqui\n```"
-    )
-    st.stop()
 
 # --- Histórico da conversa ---
 for mensagem in st.session_state.mensagens:
@@ -90,7 +78,7 @@ if entrada:
         st.markdown(entrada)
 
     with st.chat_message("assistant"):
-        with st.spinner("Analisando sinais de atenção..."):
+        with st.spinner(f"Analisando sinais de atenção com {st.session_state.agente.modelo}..."):
             resposta = st.session_state.agente.analisar(st.session_state.mensagens)
             st.markdown(resposta)
 
