@@ -1,6 +1,6 @@
 # Pitch (3 minutos)
 
-> [!Tip]
+> [!IMPORTANT]
 > Apresentação completa sobre a solução está disponível na pasta `assets`.
 
 ## Roteiro Sugerido
